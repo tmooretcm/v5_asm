@@ -4,7 +4,7 @@
 <!-- |    EDITING THIS FILE BY HAND IS NOT RECOMMENDED                                 | -->
 <!-- =================================================================================== -->
 <robot name="ur5">
-  <link name="map"/>
+  <link name="world"/>
   <gazebo>
     <plugin filename="libgazebo_ros_control.so" name="ros_control">
       <!--robotNamespace>/</robotNamespace-->
@@ -356,7 +356,7 @@
     </collision>
   </link>
   <joint name="world_to_base" type="fixed">
-    <parent link="map"/>
+    <parent link="world"/>
     <child link="base_link_main"/>
     <origin rpy="0.0 0.0 0.0" xyz="0.0 0.0 0.0"/>
   </joint>
@@ -1166,7 +1166,7 @@
     <visual>
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
-        <mesh filename="package://v5_asm/meshes/upper_chasis.dae"/>
+        <mesh filename="package://v5_asm/meshes/upper_chasis.STL"/>
       </geometry>
       <material name="">
         <color rgba="0.792156862745098 0.819607843137255 0.933333333333333 1"/>
@@ -1175,7 +1175,7 @@
     <collision>
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
-        <mesh filename="package://v5_asm/meshes/upper_chasis.dae"/>
+        <mesh filename="package://v5_asm/meshes/upper_chasis.STL"/>
       </geometry>
     </collision>
   </link>
@@ -1208,7 +1208,8 @@
     </collision>
   </link>
   <joint name="kinect" type="fixed">
-    <origin rpy="3.1416 -1.5708 0" xyz="0.33702 0.80334 0.31779"/>
+    <!-- .31779 -->
+    <origin rpy="-1.57079632679 -1.5708 0" xyz="0.378055 0.80334 0.30488"/>
     <parent link="upper_chasis"/>
     <child link="kinect"/>
     <axis xyz="0 0 0"/>
@@ -1236,7 +1237,7 @@
     </collision>
   </link>
   <joint name="lidar" type="fixed">
-    <origin rpy="3.1416 0 0.087266" xyz="0.40469 0.76764 0.30488"/>
+    <origin rpy="1.57079632679 0 0" xyz="0.40469 0.763 0.30488"/>
     <parent link="upper_chasis"/>
     <child link="lidar"/>
     <axis xyz="0 0 0"/>
@@ -1264,7 +1265,7 @@
     </collision>
   </link>
   <joint name="monitor" type="fixed">
-    <origin rpy="1.5708 1.5708 0" xyz="0.4177 0.55518 0.3106"/>
+    <origin rpy="0 1.5708 0" xyz="0.4177 0.55518 0.3106"/>
     <parent link="upper_chasis"/>
     <child link="monitor"/>
     <axis xyz="0 0 0"/>
