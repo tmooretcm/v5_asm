@@ -1,0 +1,1054 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- This URDF was automatically created by SolidWorks to URDF Exporter! Originally created by Stephen Brawner (brawner@gmail.com) 
+     Commit Version: 1.6.0-1-g15f4949  Build Version: 1.6.7594.29634
+     For more information, please see http://wiki.ros.org/sw_urdf_exporter -->
+<robot
+  name="v5_asm">
+  <link
+    name="base_link">
+    <inertial>
+      <origin
+        xyz="0.223816947825755 0.78789824432445 0.719678994850341"
+        rpy="0 0 0" />
+      <mass
+        value="20.4614723737531" />
+      <inertia
+        ixx="0.193503849804198"
+        ixy="2.5928766974119E-05"
+        ixz="-0.00546790506828599"
+        iyy="0.229199344101863"
+        iyz="0.00386125153849003"
+        izz="0.108672325503107" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://v5_asm/meshes/base_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.752941176470588 0.752941176470588 0.752941176470588 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://v5_asm/meshes/base_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <link
+    name="caster_plate">
+    <inertial>
+      <origin
+        xyz="0.0006794 0.0039172 0.056734"
+        rpy="0 0 0" />
+      <mass
+        value="2.2731" />
+      <inertia
+        ixx="0.013692"
+        ixy="2.0369E-11"
+        ixz="1.767E-10"
+        iyy="0.041932"
+        iyz="4.6798E-11"
+        izz="0.028298" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://v5_asm/meshes/caster_plate.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.79216 0.81961 0.93333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://v5_asm/meshes/caster_plate.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="caster_plate"
+    type="fixed">
+    <origin
+      xyz="0.23172 -0.73293 0.45052"
+      rpy="1.5708 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="caster_plate" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+  <link
+    name="front_caster_bracket">
+    <inertial>
+      <origin
+        xyz="0.365335288180012 0.248678222225418 0.0691082920818489"
+        rpy="0 0 0" />
+      <mass
+        value="0.0568106650345589" />
+      <inertia
+        ixx="8.23477905821373E-05"
+        ixy="1.16897757597728E-09"
+        ixz="1.34346506178931E-05"
+        iyy="6.30736438277275E-05"
+        iyz="8.37968543033817E-11"
+        izz="6.04054945077207E-05" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://v5_asm/meshes/front_caster_bracket.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.752941176470588 0.752941176470588 0.752941176470588 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://v5_asm/meshes/front_caster_bracket.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="front_caster_bracket"
+    type="fixed">
+    <origin
+      xyz="-0.2477 -0.02493 0.75732"
+      rpy="1.5708 1.5708 0" />
+    <parent
+      link="caster_plate" />
+    <child
+      link="front_caster_bracket" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+  <link
+    name="front_caster_wheel">
+    <inertial>
+      <origin
+        xyz="0 -1.11022302462516E-16 -5.55111512312578E-17"
+        rpy="0 0 0" />
+      <mass
+        value="0.536233974367649" />
+      <inertia
+        ixx="0.00102083888487686"
+        ixy="-3.7578670947432E-11"
+        ixz="-5.49056054237192E-18"
+        iyy="0.00186916214511589"
+        iyz="4.8605926826697E-19"
+        izz="0.0010208060948475" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://v5_asm/meshes/front_caster_wheel.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://v5_asm/meshes/front_caster_wheel.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="front_caster_wheel"
+    type="fixed">
+    <origin
+      xyz="0.35417 0.24809 0.11425"
+      rpy="0 0 0" />
+    <parent
+      link="front_caster_bracket" />
+    <child
+      link="front_caster_wheel" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+  <link
+    name="back_caster_bracket">
+    <inertial>
+      <origin
+        xyz="1.67037157439154E-07 -0.0868275208414239 0.00764135388193965"
+        rpy="0 0 0" />
+      <mass
+        value="0.0423689978722741" />
+      <inertia
+        ixx="6.26126883817095E-05"
+        ixy="-8.45844635289874E-10"
+        ixz="2.2577243151957E-10"
+        iyy="7.35721776271657E-05"
+        iyz="-1.3433956339157E-05"
+        izz="5.16282462873607E-05" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://v5_asm/meshes/back_caster_bracket.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://v5_asm/meshes/back_caster_bracket.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="back_caster_bracket"
+    type="fixed">
+    <origin
+      xyz="-0.00094312 -0.06237 -0.16395"
+      rpy="1.5708 0.037075 0" />
+    <parent
+      link="caster_plate" />
+    <child
+      link="back_caster_bracket" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+  <link
+    name="back_caster_wheel">
+    <inertial>
+      <origin
+        xyz="-1.04558584013148E-11 6.74476863249396E-11 -1.96453964207421E-13"
+        rpy="0 0 0" />
+      <mass
+        value="0.536223652623287" />
+      <inertia
+        ixx="0.00102083888487686"
+        ixy="-3.757866963772E-11"
+        ixz="-7.65775518083572E-13"
+        iyy="0.00186916214511585"
+        iyz="7.64870751370633E-19"
+        izz="0.00102080609484746" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://v5_asm/meshes/back_caster_wheel.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://v5_asm/meshes/back_caster_wheel.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="back_caster_wheel"
+    type="fixed">
+    <origin
+      xyz="-0.00022561 -0.071859 0.068169"
+      rpy="3.1416 -0.044138 1.5708" />
+    <parent
+      link="back_caster_bracket" />
+    <child
+      link="back_caster_wheel" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+  <link
+    name="left_gear_box">
+    <inertial>
+      <origin
+        xyz="0.00739304791093054 0.0184132537576796 -0.00195305339886431"
+        rpy="0 0 0" />
+      <mass
+        value="1.63780560174486" />
+      <inertia
+        ixx="0.00495644861508239"
+        ixy="-0.000669333725659883"
+        ixz="6.71187797682122E-05"
+        iyy="0.00382306425706198"
+        iyz="0.000163933699935291"
+        izz="0.00760016402666202" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://v5_asm/meshes/left_gear_box.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://v5_asm/meshes/left_gear_box.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="left_gear_box"
+    type="fixed">
+    <origin
+      xyz="0.44635 -0.78338 0.47561"
+      rpy="-1.5708 0 -1.5708" />
+    <parent
+      link="base_link" />
+    <child
+      link="left_gear_box" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+  <link
+    name="left_i_wheel">
+    <inertial>
+      <origin
+        xyz="0.0177417489006749 -4.19299358345171E-07 -1.59892758588853E-07"
+        rpy="0 0 0" />
+      <mass
+        value="10.8391746130563" />
+      <inertia
+        ixx="0.359971317777511"
+        ixy="-1.74908674546323E-08"
+        ixz="-1.43629913845075E-07"
+        iyy="0.185781292275978"
+        iyz="-1.44805236099166E-06"
+        izz="0.185820148109983" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://v5_asm/meshes/left_i_wheel.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.752941176470588 0.752941176470588 0.752941176470588 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://v5_asm/meshes/left_i_wheel.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="left_i_wheel"
+    type="fixed">
+    <origin
+      xyz="0 0 0.052156"
+      rpy="1.1682 1.5708 0" />
+    <parent
+      link="left_gear_box" />
+    <child
+      link="left_i_wheel" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+  <link
+    name="right_gear_box">
+    <inertial>
+      <origin
+        xyz="0.00739304791093043 -0.0184132537576797 0.00195305339886435"
+        rpy="0 0 0" />
+      <mass
+        value="1.63780560174486" />
+      <inertia
+        ixx="0.00495644861508239"
+        ixy="0.000669333725659883"
+        ixz="-6.71187797682129E-05"
+        iyy="0.00382306425706198"
+        iyz="0.00016393369993529"
+        izz="0.00760016402666201" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://v5_asm/meshes/right_gear_box.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://v5_asm/meshes/right_gear_box.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="right_gear_box"
+    type="fixed">
+    <origin
+      xyz="0.018326 -0.78338 0.47561"
+      rpy="1.5708 0 1.5708" />
+    <parent
+      link="base_link" />
+    <child
+      link="right_gear_box" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+  <link
+    name="right_i_wheel">
+    <inertial>
+      <origin
+        xyz="0.017741748900675 -4.19294753362109E-07 -1.59891819173641E-07"
+        rpy="0 0 0" />
+      <mass
+        value="10.8391746130564" />
+      <inertia
+        ixx="0.359969793874041"
+        ixy="-8.40262484890138E-09"
+        ixz="2.00445991544748E-08"
+        iyy="0.185780931677522"
+        iyz="-1.19702130516423E-06"
+        izz="0.18581895102282" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://v5_asm/meshes/right_i_wheel.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.752941176470588 0.752941176470588 0.752941176470588 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://v5_asm/meshes/right_i_wheel.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="right_i_wheel"
+    type="fixed">
+    <origin
+      xyz="0 0 -0.052156"
+      rpy="1.5708 -1.5708 0" />
+    <parent
+      link="right_gear_box" />
+    <child
+      link="right_i_wheel" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+  <link
+    name="lower_chasis_and_battery">
+    <inertial>
+      <origin
+        xyz="-7.40624126182032E-05 0.0616565980495644 -0.0313255964907295"
+        rpy="0 0 0" />
+      <mass
+        value="14.0902746517906" />
+      <inertia
+        ixx="0.0787989259767555"
+        ixy="-1.28686109765415E-06"
+        ixz="8.31096809270492E-05"
+        iyy="0.208127955865328"
+        iyz="-0.00143169842059502"
+        izz="0.144911480468362" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://v5_asm/meshes/lower_chasis_and_battery.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.298039215686275 0.298039215686275 0.298039215686275 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://v5_asm/meshes/lower_chasis_and_battery.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="lower_chasis_and_battery"
+    type="fixed">
+    <origin
+      xyz="0.23234 -0.82239 0.33073"
+      rpy="1.5708 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="lower_chasis_and_battery" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+  <link
+    name="upper_chasis">
+    <inertial>
+      <origin
+        xyz="0.421851675639527 0.58351590737508 0.29170303006293"
+        rpy="0 0 0" />
+      <mass
+        value="15.5308283108604" />
+      <inertia
+        ixx="0.326883596800175"
+        ixy="-0.000227898138257354"
+        ixz="-1.08883421046096E-07"
+        iyy="0.221231147340215"
+        iyz="4.71743419822564E-07"
+        izz="0.11819428993838" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://v5_asm/meshes/upper_chasis.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.752941176470588 0.752941176470588 0.752941176470588 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://v5_asm/meshes/upper_chasis.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="upper_chasis"
+    type="fixed">
+    <origin
+      xyz="-0.07828 -0.90265 0.78248"
+      rpy="1.5708 0 1.5708" />
+    <parent
+      link="base_link" />
+    <child
+      link="upper_chasis" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+  <link
+    name="arm_stand">
+    <inertial>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <mass
+        value="0" />
+      <inertia
+        ixx="0"
+        ixy="0"
+        ixz="0"
+        iyy="0"
+        iyz="0"
+        izz="0" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://v5_asm/meshes/arm_stand.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://v5_asm/meshes/arm_stand.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="arm_stand"
+    type="fixed">
+    <origin
+      xyz="0.174336004182173 -0.980639788253771 0.86287417943611"
+      rpy="0 -0.523598775598287 1.5707963267949" />
+    <parent
+      link="base_link" />
+    <child
+      link="arm_stand" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+  <link
+    name="ur5_joint_1">
+    <inertial>
+      <origin
+        xyz="-0.0851578865050415 0.0164392281339381 -6.23139646188653E-06"
+        rpy="0 0 0" />
+      <mass
+        value="1.57303506564449" />
+      <inertia
+        ixx="0.00282985739226893"
+        ixy="0.000319345479237003"
+        ixz="-1.34676743739656E-07"
+        iyy="0.00253797666127975"
+        iyz="4.48202119164443E-07"
+        izz="0.00262077848276895" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://v5_asm/meshes/ur5_joint_1.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.752941176470588 0.752941176470588 0.752941176470588 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://v5_asm/meshes/ur5_joint_1.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="ur5_joint_1"
+    type="fixed">
+    <origin
+      xyz="0 0 0.0159999999802745"
+      rpy="3.09571091429438 1.5707963267949 0" />
+    <parent
+      link="arm_stand" />
+    <child
+      link="ur5_joint_1" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+  <link
+    name="ur5_joint_2">
+    <inertial>
+      <origin
+        xyz="-0.302716773424523 0.132314664521354 1.70714815173056E-07"
+        rpy="0 0 0" />
+      <mass
+        value="4.66880321115233" />
+      <inertia
+        ixx="0.00636704093913073"
+        ixy="-7.4851594106945E-13"
+        ixz="8.92859547128736E-07"
+        iyy="0.0218238021306941"
+        iyz="-2.20693585928377E-07"
+        izz="0.0213266819326688" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://v5_asm/meshes/ur5_joint_2.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.752941176470588 0.752941176470588 0.752941176470588 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://v5_asm/meshes/ur5_joint_2.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="ur5_joint_2"
+    type="fixed">
+    <origin
+      xyz="-0.0907437801224931 0.000800000138973911 0.0860801608171566"
+      rpy="-3.14159265358975 -1.51805981894767 -3.1415926535893" />
+    <parent
+      link="ur5_joint_1" />
+    <child
+      link="ur5_joint_2" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+  <link
+    name="ur5_joint_3">
+    <inertial>
+      <origin
+        xyz="-0.68510070034862 0.0209726671665177 -2.59849638695187E-06"
+        rpy="0 0 0" />
+      <mass
+        value="2.68543514201199" />
+      <inertia
+        ixx="0.0022410015673309"
+        ixy="-0.000112853550401981"
+        ixz="4.22132037567786E-07"
+        iyy="0.0118077393243565"
+        iyz="-2.69244938906038E-07"
+        izz="0.011655178945376" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://v5_asm/meshes/ur5_joint_3.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.752941176470588 0.752941176470588 0.752941176470588 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://v5_asm/meshes/ur5_joint_3.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="ur5_joint_3"
+    type="fixed">
+    <origin
+      xyz="-1.00359847684203 -0.00100000206044265 -0.137365136296576"
+      rpy="3.14159265358979 0.272054712059029 3.14159265358979" />
+    <parent
+      link="ur5_joint_2" />
+    <child
+      link="ur5_joint_3" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+  <link
+    name="ur5_joint_4">
+    <inertial>
+      <origin
+        xyz="-0.899697035002294 0.098829223761112 1.25322596949973E-05"
+        rpy="0 0 0" />
+      <mass
+        value="0.540829877264233" />
+      <inertia
+        ixx="0.000411405742140125"
+        ixy="4.27843738816299E-05"
+        ixz="-2.86035010084652E-07"
+        iyy="0.000367441022009205"
+        iyz="4.08936950726987E-07"
+        izz="0.000386999741382836" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://v5_asm/meshes/ur5_joint_4.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.752941176470588 0.752941176470588 0.752941176470588 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://v5_asm/meshes/ur5_joint_4.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="ur5_joint_4"
+    type="fixed">
+    <origin
+      xyz="-0.739663599247898 0.000170014192710066 0.888479554424629"
+      rpy="0 -1.38849834705104 0" />
+    <parent
+      link="ur5_joint_3" />
+    <child
+      link="ur5_joint_4" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+  <link
+    name="ur5_joint_5">
+    <inertial>
+      <origin
+        xyz="-0.987029186698024 0.106246790984678 -1.25284432440087E-05"
+        rpy="0 0 0" />
+      <mass
+        value="0.540828690228628" />
+      <inertia
+        ixx="0.00036743948779725"
+        ixy="4.27816505795675E-05"
+        ixz="4.10392906810031E-07"
+        iyy="0.000411403404013035"
+        iyz="-2.86656457293191E-07"
+        izz="0.000387001350776085" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://v5_asm/meshes/ur5_joint_5.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.752941176470588 0.752941176470588 0.752941176470588 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://v5_asm/meshes/ur5_joint_5.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="ur5_joint_5"
+    type="fixed">
+    <origin
+      xyz="-0.0001700014332911 0.159749899674633 0.0981068042515685"
+      rpy="-2.04010737381513 0 0" />
+    <parent
+      link="ur5_joint_4" />
+    <child
+      link="ur5_joint_5" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+  <link
+    name="ur5_joint_6">
+    <inertial>
+      <origin
+        xyz="-0.9982782858537 0.169556644174796 0.000119821347728477"
+        rpy="0 0 0" />
+      <mass
+        value="0.164823443517061" />
+      <inertia
+        ixx="6.8269716163652E-05"
+        ixy="5.77535128285253E-08"
+        ixz="-3.2000818998976E-07"
+        iyy="0.000116042885181724"
+        iyz="-8.84003773195922E-08"
+        izz="6.85506707041206E-05" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://v5_asm/meshes/ur5_joint_6.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.752941176470588 0.752941176470588 0.752941176470588 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://v5_asm/meshes/ur5_joint_6.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="ur5_joint_6"
+    type="fixed">
+    <origin
+      xyz="-1.87296141428216 0.00017000021059943 0.480828146515122"
+      rpy="-3.14159265358979 -0.50258809498982 -3.14159265358978" />
+    <parent
+      link="ur5_joint_5" />
+    <child
+      link="ur5_joint_6" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+  <link
+    name="2F140">
+    <inertial>
+      <origin
+        xyz="0.000237759894406386 0.0555071628472585 0.211321123252735"
+        rpy="0 0 0" />
+      <mass
+        value="0.354648186983272" />
+      <inertia
+        ixx="0.000236348900890513"
+        ixy="9.75305922412345E-08"
+        ixz="-1.13014381474944E-08"
+        iyy="0.000167617298286488"
+        iyz="-1.12504473988291E-07"
+        izz="0.000275420454045277" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://v5_asm/meshes/2F140.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.752941176470588 0.752941176470588 0.752941176470588 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://v5_asm/meshes/2F140.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="2F140"
+    type="fixed">
+    <origin
+      xyz="-0.794216396931517 0.191241000633607 0.0552519322853813"
+      rpy="-3.14159265358979 -1.30491835727444 -3.14159265358978" />
+    <parent
+      link="ur5_joint_6" />
+    <child
+      link="2F140" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+</robot>

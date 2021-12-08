@@ -1,0 +1,131 @@
+digraph G {
+node [shape=box];
+"world" [label="world"];
+"base_link_main" [label="base_link_main"];
+"arm_stand" [label="arm_stand"];
+"base_link" [label="base_link"];
+"base" [label="base"];
+"shoulder_link" [label="shoulder_link"];
+"upper_arm_link" [label="upper_arm_link"];
+"forearm_link" [label="forearm_link"];
+"wrist_1_link" [label="wrist_1_link"];
+"wrist_2_link" [label="wrist_2_link"];
+"wrist_3_link" [label="wrist_3_link"];
+"robotiq_arg2f_base_link" [label="robotiq_arg2f_base_link"];
+"left_outer_knuckle" [label="left_outer_knuckle"];
+"left_outer_finger" [label="left_outer_finger"];
+"left_inner_finger" [label="left_inner_finger"];
+"left_inner_finger_pad" [label="left_inner_finger_pad"];
+"left_inner_knuckle" [label="left_inner_knuckle"];
+"right_inner_knuckle" [label="right_inner_knuckle"];
+"right_outer_knuckle" [label="right_outer_knuckle"];
+"right_outer_finger" [label="right_outer_finger"];
+"right_inner_finger" [label="right_inner_finger"];
+"right_inner_finger_pad" [label="right_inner_finger_pad"];
+"ee_link" [label="ee_link"];
+"tool0" [label="tool0"];
+"base_link_2" [label="base_link_2"];
+"base_chassis_link" [label="base_chassis_link"];
+"aux_battery_link" [label="aux_battery_link"];
+"front_caster_plate_link" [label="front_caster_plate_link"];
+"front_caster_swivel_link" [label="front_caster_swivel_link"];
+"front_caster_wheel_link" [label="front_caster_wheel_link"];
+"inertial_collision_link" [label="inertial_collision_link"];
+"left_spacer_link" [label="left_spacer_link"];
+"left_wheel_link" [label="left_wheel_link"];
+"mcu_1_battery_link" [label="mcu_1_battery_link"];
+"rear_caster_plate_link" [label="rear_caster_plate_link"];
+"rear_caster_swivel_link" [label="rear_caster_swivel_link"];
+"rear_caster_wheel_link" [label="rear_caster_wheel_link"];
+"right_spacer_link" [label="right_spacer_link"];
+"right_wheel_link" [label="right_wheel_link"];
+"upper_chasis" [label="upper_chasis"];
+"kinect" [label="kinect"];
+"lidar" [label="lidar"];
+"monitor" [label="monitor"];
+node [shape=ellipse, color=blue, fontcolor=blue];
+"world" -> "world_to_base" [label="xyz: 0 0 0 \nrpy: 0 -0 0"]
+"world_to_base" -> "base_link_main"
+"base_link_main" -> "arm_stand" [label="xyz: 0.17434 -0.98064 0.86287 \nrpy: 6.40988e-17 -0.5236 1.5708"]
+"arm_stand" -> "arm_stand"
+"arm_stand" -> "stand_to_arm" [label="xyz: 0 0 0.016 \nrpy: 0 -0 0"]
+"stand_to_arm" -> "base_link"
+"base_link" -> "base_link-base_fixed_joint" [label="xyz: 0 0 0 \nrpy: 0 0 3.14159"]
+"base_link-base_fixed_joint" -> "base"
+"base_link" -> "shoulder_pan_joint" [label="xyz: 0 0 0.089159 \nrpy: 0 -0 -3.14159"]
+"shoulder_pan_joint" -> "shoulder_link"
+"shoulder_link" -> "shoulder_lift_joint" [label="xyz: 0 0.13585 0 \nrpy: 0 1.5708 -0"]
+"shoulder_lift_joint" -> "upper_arm_link"
+"upper_arm_link" -> "elbow_joint" [label="xyz: 0 -0.1197 0.425 \nrpy: 0 -0 0"]
+"elbow_joint" -> "forearm_link"
+"forearm_link" -> "wrist_1_joint" [label="xyz: 0 0 0.39225 \nrpy: 0 1.5708 -0"]
+"wrist_1_joint" -> "wrist_1_link"
+"wrist_1_link" -> "wrist_2_joint" [label="xyz: 0 0.093 0 \nrpy: 0 -0 0"]
+"wrist_2_joint" -> "wrist_2_link"
+"wrist_2_link" -> "wrist_3_joint" [label="xyz: 0 0 0.09465 \nrpy: 0 -0 0"]
+"wrist_3_joint" -> "wrist_3_link"
+"wrist_3_link" -> "arm_to_gripper" [label="xyz: 0 0.0772199 0 \nrpy: -1.5708 0 0"]
+"arm_to_gripper" -> "robotiq_arg2f_base_link"
+"robotiq_arg2f_base_link" -> "finger_joint" [label="xyz: 0 -0.030601 0.054905 \nrpy: 2.2958 -0 0"]
+"finger_joint" -> "left_outer_knuckle"
+"left_outer_knuckle" -> "left_outer_finger_joint" [label="xyz: 0 0.01822 0.0260018 \nrpy: 0 -0 0"]
+"left_outer_finger_joint" -> "left_outer_finger"
+"left_outer_finger" -> "left_inner_finger_joint" [label="xyz: 0 0.0817554 -0.0282203 \nrpy: -0.725 0 0"]
+"left_inner_finger_joint" -> "left_inner_finger"
+"left_inner_finger" -> "left_inner_finger_pad_joint" [label="xyz: 0 0.0457554 -0.0272203 \nrpy: 0 -0 0"]
+"left_inner_finger_pad_joint" -> "left_inner_finger_pad"
+"robotiq_arg2f_base_link" -> "left_inner_knuckle_joint" [label="xyz: 0 -0.0127 0.06142 \nrpy: 2.2958 -0 0"]
+"left_inner_knuckle_joint" -> "left_inner_knuckle"
+"robotiq_arg2f_base_link" -> "right_inner_knuckle_joint" [label="xyz: 0 0.0127 0.06142 \nrpy: 2.2958 -0 3.14159"]
+"right_inner_knuckle_joint" -> "right_inner_knuckle"
+"robotiq_arg2f_base_link" -> "right_outer_knuckle_joint" [label="xyz: 0 0.030601 0.054905 \nrpy: 2.2958 -0 -3.14159"]
+"right_outer_knuckle_joint" -> "right_outer_knuckle"
+"right_outer_knuckle" -> "right_outer_finger_joint" [label="xyz: 0 0.01822 0.0260018 \nrpy: 0 -0 0"]
+"right_outer_finger_joint" -> "right_outer_finger"
+"right_outer_finger" -> "right_inner_finger_joint" [label="xyz: 0 0.0817554 -0.0282203 \nrpy: -0.725 0 0"]
+"right_inner_finger_joint" -> "right_inner_finger"
+"right_inner_finger" -> "right_inner_finger_pad_joint" [label="xyz: 0 0.0457554 -0.0272203 \nrpy: 0 -0 0"]
+"right_inner_finger_pad_joint" -> "right_inner_finger_pad"
+"wrist_3_link" -> "ee_fixed_joint" [label="xyz: 0 0.0823 0 \nrpy: 0 -0 1.5708"]
+"ee_fixed_joint" -> "ee_link"
+"wrist_3_link" -> "wrist_3_link-tool0_fixed_joint" [label="xyz: 0 0.0823 0 \nrpy: -1.5708 0 0"]
+"wrist_3_link-tool0_fixed_joint" -> "tool0"
+"base_link_main" -> "base_footprint_joint" [label="xyz: 0.232105 -0.810467 0.245513 \nrpy: 0 -0 1.5708"]
+"base_footprint_joint" -> "base_link_2"
+"base_link_2" -> "base_chassis_joint" [label="xyz: 0 0 0.158018 \nrpy: 0 -0 0"]
+"base_chassis_joint" -> "base_chassis_link"
+"base_chassis_link" -> "aux_battery_joint" [label="xyz: 0.09298 0 0 \nrpy: 0 -0 -3.14159"]
+"aux_battery_joint" -> "aux_battery_link"
+"base_chassis_link" -> "front_caster_plate_joint" [label="xyz: 0.314721 0 0.0242523 \nrpy: 0 -0 -3.14159"]
+"front_caster_plate_joint" -> "front_caster_plate_link"
+"front_caster_plate_link" -> "front_caster_swivel" [label="xyz: 0 0 0 \nrpy: 0 -0 0"]
+"front_caster_swivel" -> "front_caster_swivel_link"
+"front_caster_swivel_link" -> "front_caster_wheel" [label="xyz: -0.03782 0 -0.10608 \nrpy: 0 -0 0"]
+"front_caster_wheel" -> "front_caster_wheel_link"
+"base_chassis_link" -> "inertial_collision_joint" [label="xyz: 0 0 0 \nrpy: 0 -0 0"]
+"inertial_collision_joint" -> "inertial_collision_link"
+"base_chassis_link" -> "left_spacer_joint" [label="xyz: 0 0.19582 0.00665015 \nrpy: 0 -0 0"]
+"left_spacer_joint" -> "left_spacer_link"
+"base_chassis_link" -> "left_wheel" [label="xyz: 0 0.239556 0.0825502 \nrpy: 0 -0 0"]
+"left_wheel" -> "left_wheel_link"
+"base_chassis_link" -> "mcu_1_battery_joint" [label="xyz: -0.09298 0 0 \nrpy: 0 -0 0"]
+"mcu_1_battery_joint" -> "mcu_1_battery_link"
+"base_chassis_link" -> "rear_caster_plate_joint" [label="xyz: -0.314721 0 0.0242523 \nrpy: 0 -0 0"]
+"rear_caster_plate_joint" -> "rear_caster_plate_link"
+"rear_caster_plate_link" -> "rear_caster_swivel" [label="xyz: 0 0 0 \nrpy: 0 -0 0"]
+"rear_caster_swivel" -> "rear_caster_swivel_link"
+"rear_caster_swivel_link" -> "rear_caster_wheel" [label="xyz: -0.03782 0 -0.10608 \nrpy: 0 -0 0"]
+"rear_caster_wheel" -> "rear_caster_wheel_link"
+"base_chassis_link" -> "right_spacer_joint" [label="xyz: 0 -0.19582 0.00665015 \nrpy: 0 -0 -3.14159"]
+"right_spacer_joint" -> "right_spacer_link"
+"base_chassis_link" -> "right_wheel" [label="xyz: 0 -0.239556 0.0825502 \nrpy: 0 -0 0"]
+"right_wheel" -> "right_wheel_link"
+"base_link_main" -> "upper_chasis" [label="xyz: -0.07828 -0.90265 0.78248 \nrpy: 1.5708 -0 1.5708"]
+"upper_chasis" -> "upper_chasis"
+"upper_chasis" -> "kinect" [label="xyz: 0.33702 0.80334 0.31779 \nrpy: 0 -1.5708 3.1416"]
+"kinect" -> "kinect"
+"upper_chasis" -> "lidar" [label="xyz: 0.40469 0.76764 0.30488 \nrpy: -3.14159 -5.29396e-23 0.087266"]
+"lidar" -> "lidar"
+"upper_chasis" -> "monitor" [label="xyz: 0.4177 0.55518 0.3106 \nrpy: 0 1.5708 -1.5708"]
+"monitor" -> "monitor"
+}

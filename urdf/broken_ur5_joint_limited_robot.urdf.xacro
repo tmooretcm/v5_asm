@@ -1,0 +1,567 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro"
+       name="ur5" >
+
+  <!-- segway base -->
+  <xacro:include filename="$(find segbot_description)/urdf/segway_110_base.urdf.xacro" />
+  <xacro:include filename="$(find segbot_description)/urdf/v3/common.urdf.xacro" />
+
+  <link name = "map"/>
+  
+
+  <xacro:segway_robot parent="map">
+    <origin xyz="0 0 0" rpy="0 0 0" />
+  </xacro:segway_robot>
+  
+  <link
+    name="base_link_main">
+    <inertial>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <mass
+        value="20.4660866954057" />
+      <inertia
+        ixx="0.193568038684775"
+        ixy="0.00548623614276343"
+        ixz="-6.15228083843436E-05"
+        iyy="0.108859012808764"
+        iyz="-0.00384844545395753"
+        izz="0.229327239703698" />
+    </inertial>
+
+    <visual>
+      <origin
+        xyz="0.03 -.019 .2726"
+        rpy="${pi} 0 ${pi/2}" />
+      <geometry>
+        <mesh
+          filename="package://v5_asm/meshes/base_link.dae"/>
+      </geometry>
+      <material name="">
+        <color
+          rgba="0.752941176470588 0.752941176470588 0.752941176470588 1" />
+      </material>
+    </visual>
+
+    <collision>
+      <origin
+        xyz="0 0 .2726"
+        rpy="${pi} 0 ${-pi/2}" />
+      <geometry>
+        <mesh
+          filename="package://v5_asm/meshes/base_link.dae"/>
+      </geometry>
+    </collision>
+
+  </link>
+
+  <joint name="base_to_body" type="fixed">
+    <parent link="base_link_2"/>
+    <child link = "base_link_main"/>
+    <origin xyz="0 0 0" rpy="0 0 0" />
+  </joint>
+
+  <link
+    name="arm_stand">
+    <inertial>
+      <origin
+        xyz="-0.0449002179804069 -0.00120158576170751 -0.0786427433397576"
+        rpy="0 0 0" />
+      <mass
+        value="1.50525286307822" />
+      <inertia
+        ixx="0.00548888032967621"
+        ixy="1.929980925743E-05"
+        ixz="-0.00180882087465193"
+        iyy="0.00662090700121496"
+        iyz="6.80641116194522E-06"
+        izz="0.00455713436329697" />
+    </inertial>
+
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://v5_asm/meshes/arm_stand.dae" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+
+    <!--collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://v5_asm/meshes/arm_stand.dae" />
+      </geometry>
+    </collision-->
+  </link>
+<!-- 
+0.18017324682 -0.147546378 0
+
+-->
+  <joint
+    name="arm_stand"
+    type="fixed">
+    <origin
+      xyz="0.20017324682 -0.097546378 .6426"
+      rpy="0 ${-pi/6} ${pi}" />
+    <parent
+      link="base_link_main" />
+    <child
+      link="arm_stand" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+
+
+<!--
+<origin xyz = "${10} 0 ${BASE_PLATE_Z_OFFSET*INCH_TO_M + 0.04654958}" rpy = "0 ${pi} ${-pi/2}" />
+-0.5*BASE_PLATE_X_OFFSET*INCH_TO_M
+  <link
+    name="arm_stand">
+    <inertial>
+      <origin
+        xyz="-0.0449002179804069 -0.00120158576170751 -0.0786427433397576"
+        rpy="0 0 0" />
+      <mass
+        value="1.50525286307822" />
+      <inertia
+        ixx="0.00548888032967621"
+        ixy="1.929980925743E-05"
+        ixz="-0.00180882087465193"
+        iyy="0.00662090700121496"
+        iyz="6.80641116194522E-06"
+        izz="0.00455713436329697" />
+    </inertial>
+
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://v5_asm/meshes/arm_stand.dae" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://v5_asm/meshes/arm_stand.dae" />
+      </geometry>
+    </collision>
+  </link>
+
+  <joint
+    name="arm_stand"
+    type="fixed">
+    <origin
+      xyz="-0.037546378 0.17017324682 -0.34550005323"
+      rpy="0 ${5*pi/6} 1.5708" />
+    <parent
+      link="base_link_main" />
+    <child
+      link="arm_stand" />
+    <axis
+      xyz="0.5 0 0.86603" />
+  </joint>
+
+  <link
+    name="upper_chasis">
+    <inertial>
+      <origin
+        xyz="0.408010034067037 0.523436425874833 0.310459511796759"
+        rpy="0 0 0" />
+      <mass
+        value="0.830786236359305" />
+      <inertia
+        ixx="0.0113561959346229"
+        ixy="-1.77137015581408E-06"
+        ixz="-1.92392161060582E-12"
+        iyy="0.00307752453202283"
+        iyz="-2.16245929932274E-11"
+        izz="0.00841950781307632" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="-0.2908 .094 -0.2640118"
+        rpy="${-pi/2} 0 ${-pi/2}" />
+      <geometry>
+        <mesh
+          filename="package://v5_asm/meshes/upper_chasis.dae" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://v5_asm/meshes/upper_chasis.dae" />
+      </geometry>
+    </collision>
+  </link>
+
+  <joint
+    name="upper_chasis"
+    type="fixed">
+    <origin
+      xyz="0 0 0"
+      rpy="0 0 0" />
+    <parent
+      link="base_link_main" />
+    <child
+      link="upper_chasis" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+-->
+
+
+ <!-- arm
+  <xacro:arg name="transmission_hw_interface" default="hardware_interface/PositionJointInterface"/>
+  <xacro:include filename="$(find ur_description)/urdf/common.gazebo.xacro" />
+  <xacro:include filename="$(find v5_asm)/urdf/ur5.urdf.xacro" />
+
+  <xacro:ur5_robot prefix="" joint_limited="true"
+    shoulder_pan_lower_limit="${-pi}" shoulder_pan_upper_limit="${pi}"
+    shoulder_lift_lower_limit="${-pi}" shoulder_lift_upper_limit="${pi}"
+    elbow_joint_lower_limit="${-pi}" elbow_joint_upper_limit="${pi}"
+    wrist_1_lower_limit="${-pi}" wrist_1_upper_limit="${pi}"
+    wrist_2_lower_limit="${-pi}" wrist_2_upper_limit="${pi}"
+    wrist_3_lower_limit="${-pi}" wrist_3_upper_limit="${pi}"
+    transmission_hw_interface="$(arg transmission_hw_interface)"/>
+ -->
+
+
+<!--
+
+
+
+  
+
+  <joint name="world_to_base" type="fixed">
+    <parent link="base_link_2"/>
+    <child link = "base_link_main" />
+    <origin xyz = "0.0 0.0 0.0" rpy = "0.0 0.0 0.0" />
+  </joint>
+
+
+  <link
+    name="arm_stand">
+    <inertial>
+      <origin
+        xyz="-0.0449002179804069 -0.00120158576170751 -0.0786427433397576"
+        rpy="0 0 0" />
+      <mass
+        value="1.50525286307822" />
+      <inertia
+        ixx="0.00548888032967621"
+        ixy="1.929980925743E-05"
+        ixz="-0.00180882087465193"
+        iyy="0.00662090700121496"
+        iyz="6.80641116194522E-06"
+        izz="0.00455713436329697" />
+    </inertial>
+
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://v5_asm/meshes/arm_stand.dae" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://v5_asm/meshes/arm_stand.dae" />
+      </geometry>
+    </collision>
+  </link>
+
+  <joint
+    name="arm_stand"
+    type="fixed">
+    <origin
+      xyz="0.17434 -0.98064 0.86287"
+      rpy="0 -0.5236 1.5708" />
+    <parent
+      link="base_link_main" />
+    <child
+      link="arm_stand" />
+    <axis
+      xyz="0.5 0 0.86603" />
+  </joint>
+
+  <joint name="stand_to_arm" type="fixed">
+    <origin xyz="0 0 0.016"
+            rpy="0 0 0" />
+    <parent link="arm_stand"/>
+    <child link = "base_link"/>
+    <axis
+      xyz="0.86603 -0.022933 0.49947"/>
+  </joint>
+
+
+
+
+  <xacro:include filename="$(find robotiq_2f_140_gripper_visualization)/urdf/robotiq_arg2f_140_model_macro.xacro" />
+  <xacro:robotiq_arg2f_140 prefix="" parent="wrist_3_link">
+    <origin xyz="0 .0772199 0" rpy="${-pi/2} 0 0"/>
+  </xacro:robotiq_arg2f_140>
+
+  
+
+
+  <link
+    name="kinect">
+    <inertial>
+      <origin
+        xyz="2.85546254141789E-06 0.00442617876381557 -0.0296652165432638"
+        rpy="0 0 0" />
+      <mass
+        value="2.43875456249446" />
+      <inertia
+        ixx="0.00366777685200428"
+        ixy="3.65666914100067E-08"
+        ixz="-4.13408382742863E-07"
+        iyy="0.0053508686708892"
+        iyz="0.000216031980389351"
+        izz="0.00205613161528836" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://v5_asm/meshes/kinect.dae" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.941176470588235 0.941176470588235 0.941176470588235 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://v5_asm/meshes/kinect.dae" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="kinect"
+    type="fixed">
+    <origin
+      xyz="0.33702 0.80334 0.31779"
+      rpy="3.1416 -1.5708 0" />
+    <parent
+      link="upper_chasis" />
+    <child
+      link="kinect" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+
+
+  <link
+    name="lidar">
+    <inertial>
+      <origin
+        xyz="0.000294783332731696 0.0357745252112349 -2.58234201516716E-06"
+        rpy="0 0 0" />
+      <mass
+        value="0.585082164914895" />
+      <inertia
+        ixx="0.00062906696678346"
+        ixy="-6.8476888066688E-08"
+        ixz="-1.14106053435051E-10"
+        iyy="0.000749251783736662"
+        iyz="-5.004876230364E-08"
+        izz="0.000630263932043022" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://v5_asm/meshes/lidar.dae" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://v5_asm/meshes/lidar.dae" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="lidar"
+    type="fixed">
+    <origin
+      xyz="0.40469 0.76764 0.30488"
+      rpy="3.1416 0 0.087266" />
+    <parent
+      link="upper_chasis" />
+    <child
+      link="lidar" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+
+
+  <link
+    name="monitor">
+    <inertial>
+      <origin
+        xyz="-9.44272438019311E-13 0.0100274135784167 1.28586030712086E-12"
+        rpy="0 0 0" />
+      <mass
+        value="1.77239075139848" />
+      <inertia
+        ixx="0.0081743729118215"
+        ixy="-2.82200542311203E-12"
+        ixz="4.5362584792376E-17"
+        iyy="0.0290517648183889"
+        iyz="-6.23620652586998E-17"
+        izz="0.0209962115185463" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://v5_asm/meshes/monitor.dae" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.647058823529412 0.619607843137255 0.6 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://v5_asm/meshes/monitor.dae" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="monitor"
+    type="fixed">
+    <origin
+      xyz="0.4177 0.55518 0.3106"
+      rpy="1.5708 1.5708 0" />
+    <parent
+      link="upper_chasis" />
+    <child
+      link="monitor" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+  <link
+    name="hokuyo">
+    <inertial>
+      <origin
+        xyz="0.133584074211728 0.202324368680826 0.204105336507967"
+        rpy="0 0 0" />
+      <mass
+        value="0.652167585839582" />
+      <inertia
+        ixx="0.00157050335763022"
+        ixy="1.74853977399192E-06"
+        ixz="3.70456316395289E-08"
+        iyy="0.00157786080287871"
+        iyz="-1.22184572203833E-07"
+        izz="0.000194017970807751" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://v5_asm/meshes/hokuyo.dae" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.752941176470588 0.752941176470588 0.752941176470588 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://v5_asm/meshes/hokuyo.dae" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="base_to_hokuyo"
+    type="fixed">
+    <origin
+      xyz="0.02746682844 ${1.5 * -0.64364286931 -  .01155828} ${2 *0.31040992561 + 0.1135}"
+      rpy="0 3.14159265 1.5707963267949" />
+    <parent
+      link="base_link_main" />
+    <child
+      link="hokuyo" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+-->
+
+</robot>

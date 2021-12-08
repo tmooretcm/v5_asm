@@ -1,0 +1,1612 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- This URDF was automatically created by SolidWorks to URDF Exporter! Originally created by Stephen Brawner (brawner@gmail.com) 
+     Commit Version: 1.6.0-1-g15f4949  Build Version: 1.6.7594.29634
+     For more information, please see http://wiki.ros.org/sw_urdf_exporter -->
+<robot  xmlns:xacro="http://wiki.ros.org/xacro" name="v5_asm">
+
+  <xacro:arg name="transmission_hw_interface" default="hardware_interface/PositionJointInterface"/>
+
+  <!-- common stuff -->
+  <xacro:include filename="$(find ur_description)/urdf/common.gazebo.xacro" />
+
+  <xacro:include filename="$(find ur_description)/urdf/ur.transmission.xacro" />
+  <xacro:include filename="$(find ur_description)/urdf/ur.gazebo.xacro" />
+
+  <xacro:macro name="cylinder_inertial" params="radius length mass *origin">
+    <inertial>
+      <mass value="${mass}" />
+      <xacro:insert_block name="origin" />
+      <inertia ixx="${0.0833333 * mass * (3 * radius * radius + length * length)}" ixy="0.0" ixz="0.0"
+        iyy="${0.0833333 * mass * (3 * radius * radius + length * length)}" iyz="0.0"
+        izz="${0.5 * mass * radius * radius}" />
+    </inertial>
+  </xacro:macro>
+
+  <xacro:macro name="ur5_robot" params="prefix joint_limited
+    shoulder_pan_lower_limit:=${-pi}    shoulder_pan_upper_limit:=${pi}
+    shoulder_lift_lower_limit:=${-pi}    shoulder_lift_upper_limit:=${pi}
+    elbow_joint_lower_limit:=${-pi}    elbow_joint_upper_limit:=${pi}
+    wrist_1_lower_limit:=${-pi}    wrist_1_upper_limit:=${pi}
+    wrist_2_lower_limit:=${-pi}    wrist_2_upper_limit:=${pi}
+    wrist_3_lower_limit:=${-pi}    wrist_3_upper_limit:=${pi}
+    transmission_hw_interface:=hardware_interface/PositionJointInterface
+    safety_limits:=false safety_pos_margin:=0.15
+    safety_k_position:=20">
+
+    <!-- Inertia parameters -->
+    <xacro:property name="base_mass" value="4.0" />  <!-- This mass might be incorrect -->
+    <xacro:property name="shoulder_mass" value="3.7000" />
+    <xacro:property name="upper_arm_mass" value="8.3930" />
+    <xacro:property name="forearm_mass" value="2.2750" />
+    <xacro:property name="wrist_1_mass" value="1.2190" />
+    <xacro:property name="wrist_2_mass" value="1.2190" />
+    <xacro:property name="wrist_3_mass" value="0.1879" />
+
+    <xacro:property name="shoulder_cog" value="0.0 0.00193 -0.02561" />
+    <xacro:property name="upper_arm_cog" value="0.0 -0.024201 0.2125" />
+    <xacro:property name="forearm_cog" value="0.0 0.0265 0.11993" />
+    <xacro:property name="wrist_1_cog" value="0.0 0.110949 0.01634" />
+    <xacro:property name="wrist_2_cog" value="0.0 0.0018 0.11099" />
+    <xacro:property name="wrist_3_cog" value="0.0 0.001159 0.0" />
+
+    <!-- Kinematic model -->
+    <!-- Properties from urcontrol.conf -->
+    <!--
+      DH for UR5:
+      a = [0.00000, -0.42500, -0.39225,  0.00000,  0.00000,  0.0000]
+      d = [0.089159,  0.00000,  0.00000,  0.10915,  0.09465,  0.0823]
+      alpha = [ 1.570796327, 0, 0, 1.570796327, -1.570796327, 0 ]
+      q_home_offset = [0, -1.570796327, 0, -1.570796327, 0, 0]
+      joint_direction = [-1, -1, 1, 1, 1, 1]
+      mass = [3.7000, 8.3930, 2.2750, 1.2190, 1.2190, 0.1879]
+      center_of_mass = [ [0, -0.02561, 0.00193], [0.2125, 0, 0.11336], [0.11993, 0.0, 0.0265], [0, -0.0018, 0.01634], [0, 0.0018,0.01634], [0, 0, -0.001159] ]
+    -->
+    <xacro:property name="d1" value="0.089159" />
+    <xacro:property name="a2" value="-0.42500" />
+    <xacro:property name="a3" value="-0.39225" />
+    <xacro:property name="d4" value="0.10915" />
+    <xacro:property name="d5" value="0.09465" />
+    <xacro:property name="d6" value="0.0823" />
+
+    <!-- Arbitrary offsets for shoulder/elbow joints -->
+    <xacro:property name="shoulder_offset" value="0.13585" />  <!-- measured from model -->
+    <xacro:property name="elbow_offset" value="-0.1197" /> <!-- measured from model -->
+
+    <!-- link lengths used in model -->
+    <xacro:property name="shoulder_height" value="${d1}" />
+    <xacro:property name="upper_arm_length" value="${-a2}" />
+    <xacro:property name="forearm_length" value="${-a3}" />
+    <xacro:property name="wrist_1_length" value="${d4 - elbow_offset - shoulder_offset}" />
+    <xacro:property name="wrist_2_length" value="${d5}" />
+    <xacro:property name="wrist_3_length" value="${d6}" />
+    <!--property name="shoulder_height" value="0.089159" /-->
+    <!--property name="shoulder_offset" value="0.13585" /-->  <!-- shoulder_offset - elbow_offset + wrist_1_length = 0.10915 -->
+    <!--property name="upper_arm_length" value="0.42500" /-->
+    <!--property name="elbow_offset" value="0.1197" /-->       <!-- CAD measured -->
+    <!--property name="forearm_length" value="0.39225" /-->
+    <!--property name="wrist_1_length" value="0.093" /-->     <!-- CAD measured -->
+    <!--property name="wrist_2_length" value="0.09465" /-->   <!-- In CAD this distance is 0.930, but in the spec it is 0.09465 -->
+    <!--property name="wrist_3_length" value="0.0823" /-->
+
+    <xacro:property name="shoulder_radius" value="0.060" />   <!-- manually measured -->
+    <xacro:property name="upper_arm_radius" value="0.054" />  <!-- manually measured -->
+    <xacro:property name="elbow_radius" value="0.060" />      <!-- manually measured -->
+    <xacro:property name="forearm_radius" value="0.040" />    <!-- manually measured -->
+    <xacro:property name="wrist_radius" value="0.045" />      <!-- manually measured -->
+
+
+    <link name="${prefix}base_link" >
+      <visual>
+        <geometry>
+          <mesh filename="package://ur_description/meshes/ur5/visual/base.dae" />
+        </geometry>
+        <material name="LightGrey">
+          <color rgba="0.7 0.7 0.7 1.0"/>
+        </material>
+      </visual>
+      <collision>
+        <geometry>
+          <mesh filename="package://ur_description/meshes/ur5/collision/base.stl" />
+        </geometry>
+      </collision>
+      <xacro:cylinder_inertial radius="0.06" length="0.05" mass="${base_mass}">
+        <origin xyz="0.0 0.0 0.0" rpy="0 0 0" />
+      </xacro:cylinder_inertial>
+    </link>
+
+    <joint name="${prefix}shoulder_pan_joint" type="revolute">
+      <parent link="${prefix}base_link" />
+      <child link = "${prefix}shoulder_link" />
+      <origin xyz="0.0 0.0 ${shoulder_height}" rpy="0.0 0.0 0.0" />
+      <axis xyz="0 0 1" />
+      <xacro:unless value="${joint_limited}">
+        <limit lower="${-2.0 * pi}" upper="${2.0 * pi}" effort="150.0" velocity="3.15"/>
+        <xacro:if value="${safety_limits}">
+          <safety_controller soft_lower_limit="${-2.0 * pi + safety_pos_margin}" soft_upper_limit="${2.0 * pi - safety_pos_margin}" k_position="${safety_k_position}" k_velocity="0.0"/>
+        </xacro:if>
+      </xacro:unless>
+      <xacro:if value="${joint_limited}">
+        <limit lower="${shoulder_pan_lower_limit}" upper="${shoulder_pan_upper_limit}" effort="150.0" velocity="3.15"/>
+        <xacro:if value="${safety_limits}">
+          <safety_controller soft_lower_limit="${shoulder_pan_lower_limit + safety_pos_margin}" soft_upper_limit="${shoulder_pan_upper_limit - safety_pos_margin}" k_position="${safety_k_position}" k_velocity="0.0"/>
+        </xacro:if>
+      </xacro:if>
+      <dynamics damping="0.0" friction="0.0"/>
+    </joint>
+
+    <link name="${prefix}shoulder_link">
+      <visual>
+        <geometry>
+          <mesh filename="package://ur_description/meshes/ur5/visual/shoulder.dae" />
+        </geometry>
+        <material name="LightGrey">
+          <color rgba="0.7 0.7 0.7 1.0"/>
+        </material>
+      </visual>
+      <collision>
+        <geometry>
+          <mesh filename="package://ur_description/meshes/ur5/collision/shoulder.stl" />
+        </geometry>
+      </collision>
+      <xacro:cylinder_inertial radius="0.06" length="0.15" mass="${shoulder_mass}">
+        <origin xyz="0.0 0.0 0.0" rpy="0 0 0" />
+      </xacro:cylinder_inertial>
+    </link>
+
+    <joint name="${prefix}shoulder_lift_joint" type="revolute">
+      <parent link="${prefix}shoulder_link" />
+      <child link = "${prefix}upper_arm_link" />
+      <origin xyz="0.0 ${shoulder_offset} 0.0" rpy="0.0 ${pi / 2.0} 0.0" />
+      <axis xyz="0 1 0" />
+      <xacro:unless value="${joint_limited}">
+        <limit lower="${-2.0 * pi}" upper="${2.0 * pi}" effort="150.0" velocity="3.15"/>
+        <xacro:if value="${safety_limits}">
+          <safety_controller soft_lower_limit="${-2.0 * pi + safety_pos_margin}" soft_upper_limit="${2.0 * pi - safety_pos_margin}" k_position="${safety_k_position}" k_velocity="0.0"/>
+        </xacro:if>
+      </xacro:unless>
+      <xacro:if value="${joint_limited}">
+        <limit lower="${shoulder_lift_lower_limit}" upper="${shoulder_lift_upper_limit}" effort="150.0" velocity="3.15"/>
+        <xacro:if value="${safety_limits}">
+          <safety_controller soft_lower_limit="${shoulder_lift_lower_limit + safety_pos_margin}" soft_upper_limit="${shoulder_lift_upper_limit - safety_pos_margin}" k_position="${safety_k_position}" k_velocity="0.0"/>
+        </xacro:if>
+      </xacro:if>
+      <dynamics damping="0.0" friction="0.0"/>
+    </joint>
+
+    <link name="${prefix}upper_arm_link">
+      <visual>
+        <geometry>
+          <mesh filename="package://ur_description/meshes/ur5/visual/upperarm.dae" />
+        </geometry>
+        <material name="LightGrey">
+          <color rgba="0.7 0.7 0.7 1.0"/>
+        </material>
+      </visual>
+      <collision>
+        <geometry>
+          <mesh filename="package://ur_description/meshes/ur5/collision/upperarm.stl" />
+        </geometry>
+      </collision>
+      <xacro:cylinder_inertial radius="0.06" length="0.56" mass="${upper_arm_mass}">
+        <origin xyz="0.0 0.0 0.28" rpy="0 0 0" />
+      </xacro:cylinder_inertial>
+    </link>
+
+    <joint name="${prefix}elbow_joint" type="revolute">
+      <parent link="${prefix}upper_arm_link" />
+      <child link = "${prefix}forearm_link" />
+      <origin xyz="0.0 ${elbow_offset} ${upper_arm_length}" rpy="0.0 0.0 0.0" />
+      <axis xyz="0 1 0" />
+      <xacro:unless value="${joint_limited}">
+        <limit lower="${-pi}" upper="${pi}" effort="150.0" velocity="3.15"/>
+        <xacro:if value="${safety_limits}">
+          <safety_controller soft_lower_limit="${-2.0 * pi + safety_pos_margin}" soft_upper_limit="${2.0 * pi - safety_pos_margin}" k_position="${safety_k_position}" k_velocity="0.0"/>
+        </xacro:if>
+      </xacro:unless>
+      <xacro:if value="${joint_limited}">
+        <limit lower="${elbow_joint_lower_limit}" upper="${elbow_joint_upper_limit}" effort="150.0" velocity="3.15"/>
+        <xacro:if value="${safety_limits}">
+          <safety_controller soft_lower_limit="${elbow_joint_lower_limit + safety_pos_margin}" soft_upper_limit="${elbow_joint_upper_limit - safety_pos_margin}" k_position="${safety_k_position}" k_velocity="0.0"/>
+        </xacro:if>
+      </xacro:if>
+      <dynamics damping="0.0" friction="0.0"/>
+    </joint>
+
+    <link name="${prefix}forearm_link">
+      <visual>
+        <geometry>
+          <mesh filename="package://ur_description/meshes/ur5/visual/forearm.dae" />
+        </geometry>
+        <material name="LightGrey">
+          <color rgba="0.7 0.7 0.7 1.0"/>
+        </material>
+      </visual>
+      <collision>
+        <geometry>
+          <mesh filename="package://ur_description/meshes/ur5/collision/forearm.stl" />
+        </geometry>
+      </collision>
+      <xacro:cylinder_inertial radius="0.06" length="${-a3}" mass="${forearm_mass}">
+        <origin xyz="0.0 0.0 ${-a3/2}" rpy="0 0 0" />
+      </xacro:cylinder_inertial>
+    </link>
+
+    <joint name="${prefix}wrist_1_joint" type="revolute">
+      <parent link="${prefix}forearm_link" />
+      <child link = "${prefix}wrist_1_link" />
+      <origin xyz="0.0 0.0 ${forearm_length}" rpy="0.0 ${pi / 2.0} 0.0" />
+      <axis xyz="0 1 0" />
+      <xacro:unless value="${joint_limited}">
+        <limit lower="${-2.0 * pi}" upper="${2.0 * pi}" effort="28.0" velocity="3.2"/>
+        <xacro:if value="${safety_limits}">
+          <safety_controller soft_lower_limit="${-2.0 * pi + safety_pos_margin}" soft_upper_limit="${2.0 * pi - safety_pos_margin}" k_position="${safety_k_position}" k_velocity="0.0"/>
+        </xacro:if>
+      </xacro:unless>
+      <xacro:if value="${joint_limited}">
+        <limit lower="${wrist_1_lower_limit}" upper="${wrist_1_upper_limit}" effort="28.0" velocity="3.2"/>
+        <xacro:if value="${safety_limits}">
+          <safety_controller soft_lower_limit="${wrist_1_lower_limit + safety_pos_margin}" soft_upper_limit="${wrist_1_upper_limit - safety_pos_margin}" k_position="${safety_k_position}" k_velocity="0.0"/>
+        </xacro:if>
+      </xacro:if>
+      <dynamics damping="0.0" friction="0.0"/>
+    </joint>
+
+    <link name="${prefix}wrist_1_link">
+      <visual>
+        <geometry>
+          <mesh filename="package://ur_description/meshes/ur5/visual/wrist1.dae" />
+        </geometry>
+        <material name="LightGrey">
+          <color rgba="0.7 0.7 0.7 1.0"/>
+        </material>
+      </visual>
+      <collision>
+        <geometry>
+          <mesh filename="package://ur_description/meshes/ur5/collision/wrist1.stl" />
+        </geometry>
+      </collision>
+      <xacro:cylinder_inertial radius="0.06" length="0.12" mass="${wrist_1_mass}">
+        <origin xyz="0.0 ${wrist_1_length} 0.0" rpy="0 0 0" />
+      </xacro:cylinder_inertial>
+    </link>
+
+    <joint name="${prefix}wrist_2_joint" type="revolute">
+      <parent link="${prefix}wrist_1_link" />
+      <child link = "${prefix}wrist_2_link" />
+      <origin xyz="0.0 ${wrist_1_length} 0.0" rpy="0.0 0.0 0.0" />
+      <axis xyz="0 0 1" />
+      <xacro:unless value="${joint_limited}">
+        <limit lower="${-2.0 * pi}" upper="${2.0 * pi}" effort="28.0" velocity="3.2"/>
+        <xacro:if value="${safety_limits}">
+          <safety_controller soft_lower_limit="${-2.0 * pi + safety_pos_margin}" soft_upper_limit="${2.0 * pi - safety_pos_margin}" k_position="${safety_k_position}" k_velocity="0.0"/>
+        </xacro:if>
+      </xacro:unless>
+      <xacro:if value="${joint_limited}">
+        <limit lower="${wrist_2_lower_limit}" upper="${wrist_2_upper_limit}" effort="28.0" velocity="3.2"/>
+        <xacro:if value="${safety_limits}">
+          <safety_controller soft_lower_limit="${wrist_2_lower_limit + safety_pos_margin}" soft_upper_limit="${wrist_2_upper_limit - safety_pos_margin}" k_position="${safety_k_position}" k_velocity="0.0"/>
+        </xacro:if>
+      </xacro:if>
+      <dynamics damping="0.0" friction="0.0"/>
+    </joint>
+
+    <link name="${prefix}wrist_2_link">
+      <visual>
+        <geometry>
+          <mesh filename="package://ur_description/meshes/ur5/visual/wrist2.dae" />
+        </geometry>
+        <material name="LightGrey">
+          <color rgba="0.7 0.7 0.7 1.0"/>
+        </material>
+      </visual>
+      <collision>
+        <geometry>
+          <mesh filename="package://ur_description/meshes/ur5/collision/wrist2.stl" />
+        </geometry>
+      </collision>
+      <xacro:cylinder_inertial radius="0.06" length="0.12" mass="${wrist_2_mass}">
+        <origin xyz="0.0 0.0 ${wrist_2_length}" rpy="0 0 0" />
+      </xacro:cylinder_inertial>
+    </link>
+
+    <joint name="${prefix}wrist_3_joint" type="revolute">
+      <parent link="${prefix}wrist_2_link" />
+      <child link = "${prefix}wrist_3_link" />
+      <origin xyz="0.0 0.0 ${wrist_2_length}" rpy="0.0 0.0 0.0" />
+      <axis xyz="0 1 0" />
+      <xacro:unless value="${joint_limited}">
+        <limit lower="${-2.0 * pi}" upper="${2.0 * pi}" effort="28.0" velocity="3.2"/>
+        <xacro:if value="${safety_limits}">
+          <safety_controller soft_lower_limit="${-2.0 * pi + safety_pos_margin}" soft_upper_limit="${2.0 * pi - safety_pos_margin}" k_position="${safety_k_position}" k_velocity="0.0"/>
+        </xacro:if>
+      </xacro:unless>
+      <xacro:if value="${joint_limited}">
+        <limit lower="${wrist_3_lower_limit}" upper="${wrist_3_upper_limit}" effort="28.0" velocity="3.2"/>
+        <xacro:if value="${safety_limits}">
+          <safety_controller soft_lower_limit="${wrist_3_lower_limit + safety_pos_margin}" soft_upper_limit="${wrist_3_upper_limit - safety_pos_margin}" k_position="${safety_k_position}" k_velocity="0.0"/>
+        </xacro:if>
+      </xacro:if>
+      <dynamics damping="0.0" friction="0.0"/>
+    </joint>
+
+    <link name="${prefix}wrist_3_link">
+      <visual>
+        <geometry>
+          <mesh filename="package://ur_description/meshes/ur5/visual/wrist3.dae" />
+        </geometry>
+        <material name="LightGrey">
+          <color rgba="0.7 0.7 0.7 1.0"/>
+        </material>
+      </visual>
+      <collision>
+        <geometry>
+          <mesh filename="package://ur_description/meshes/ur5/collision/wrist3.stl" />
+        </geometry>
+      </collision>
+      <xacro:cylinder_inertial radius="0.0375" length="0.0345" mass="${wrist_3_mass}">
+        <origin xyz="0.0 ${wrist_3_length - 0.0345/2} 0.0" rpy="${pi/2} 0 0" />
+      </xacro:cylinder_inertial>
+    </link>
+
+    <joint name="${prefix}ee_fixed_joint" type="fixed">
+      <parent link="${prefix}wrist_3_link" />
+      <child link = "${prefix}ee_link" />
+      <origin xyz="0.0 ${wrist_3_length} 0.0" rpy="0.0 0.0 ${pi/2.0}" />
+    </joint>
+
+    <link name="${prefix}ee_link">
+      <collision>
+        <geometry>
+          <box size="0.01 0.01 0.01"/>
+        </geometry>
+        <origin rpy="0 0 0" xyz="-0.01 0 0"/>
+      </collision>
+    </link>
+
+    <xacro:ur_arm_transmission prefix="${prefix}" hw_interface="${transmission_hw_interface}" />
+    <xacro:ur_arm_gazebo prefix="${prefix}" />
+
+    <!-- ROS base_link to UR 'Base' Coordinates transform -->
+    <link name="${prefix}base"/>
+    <joint name="${prefix}base_link-base_fixed_joint" type="fixed">
+      <!-- NOTE: this rotation is only needed as long as base_link itself is
+                 not corrected wrt the real robot (ie: rotated over 180
+                 degrees)
+      -->
+      <origin xyz="0 0 0" rpy="0 0 ${-pi}"/>
+      <parent link="${prefix}base_link"/>
+      <child link="${prefix}base"/>
+    </joint>
+
+    <!-- Frame coincident with all-zeros TCP on UR controller -->
+    <link name="${prefix}tool0"/>
+    <joint name="${prefix}wrist_3_link-tool0_fixed_joint" type="fixed">
+      <origin xyz="0 ${wrist_3_length} 0" rpy="${pi/-2.0} 0 0"/>
+      <parent link="${prefix}wrist_3_link"/>
+      <child link="${prefix}tool0"/>
+    </joint>
+
+  </xacro:macro>
+
+
+  
+  <xacro:ur5_robot prefix="" joint_limited="true"
+    transmission_hw_interface="$(arg transmission_hw_interface)"
+  />
+
+
+  <!-- <link name="world" /> -->
+
+  
+  <joint name="world_joint" type="fixed">
+    <parent link="base_link_main" />
+    <child link = "base_link" />
+    <origin xyz="5.0 5.0 5.0" rpy="0.0 0.0 0.0" />
+  </joint>
+
+
+  <link
+    name="base_link_main">
+    <inertial>
+      <origin
+        xyz="0.211886378 -0.81046675318 0.51736994677"
+        rpy="-1.57 0 0" />
+      <mass
+        value="20.4660866954057" />
+      <inertia
+        ixx="0.193568038684775"
+        ixy="0.00548623614276343"
+        ixz="-6.15228083843436E-05"
+        iyy="0.108859012808764"
+        iyz="-0.00384844545395753"
+        izz="0.229327239703698" />
+    </inertial>
+
+    <visual>
+      <origin
+        xyz="0.211886378 -0.81046675318 0.51736994677"
+        rpy="-1.57 0 0" />
+      <geometry>
+        <mesh
+          filename="package://v5_asm/meshes/base_link.dae" scale = "0.0254 0.0254 0.0254"/>
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.752941176470588 0.752941176470588 0.752941176470588 1" />
+      </material>
+    </visual>
+
+    <collision>
+      <origin
+        xyz="0.211886378 -0.81046675318 0.51736994677"
+        rpy="-1.57 0 0" />
+      <geometry>
+        <mesh
+          filename="package://v5_asm/meshes/base_link_main.dae" scale = "0.0254 0.0254 0.0254"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <link
+    name="caster_plate">
+    <inertial>
+      <origin
+        xyz="0.000679400372348427 0.00391721605940215 0.0567343349671494"
+        rpy="0 0 0" />
+      <mass
+        value="2.27313334797282" />
+      <inertia
+        ixx="0.0136917281986426"
+        ixy="2.03686560822833E-11"
+        ixz="1.76700033879541E-10"
+        iyy="0.0419319216248708"
+        iyz="4.67976965217184E-11"
+        izz="0.0282979087198513" />
+    </inertial>
+
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://v5_asm/meshes/caster_plate.dae" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://v5_asm/meshes/caster_plate.dae" />
+      </geometry>
+    </collision>
+  </link>
+
+  <joint
+    name="caster_plate"
+    type="fixed">
+    <origin
+      xyz="0.23172 -0.73293 0.45052"
+      rpy="1.5708 0 0" />
+    <parent
+      link="base_link_main" />
+    <child
+      link="caster_plate" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+
+
+  <link
+    name="front_caster_bracket">
+    <inertial>
+      <origin
+        xyz="0.365335288180011 0.248678222225418 0.0691082920818489"
+        rpy="0 0 0" />
+      <mass
+        value="0.0568106650345589" />
+      <inertia
+        ixx="8.23477905821372E-05"
+        ixy="1.16897757599192E-09"
+        ixz="1.34346506178931E-05"
+        iyy="6.30736438277275E-05"
+        iyz="8.37968542847457E-11"
+        izz="6.04054945077207E-05" />
+    </inertial>
+
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://v5_asm/meshes/back_caster_bracket.dae" scale = "0.001 0.001 0.001"/>
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.752941176470588 0.752941176470588 0.752941176470588 1" />
+      </material>
+    </visual>
+
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://v5_asm/meshes/back_caster_bracket.dae" scale = "0.001 0.001 0.001"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <joint
+    name="front_caster_bracket"
+    type="fixed">
+    <origin
+      xyz="-0.2477 -0.02493 0.75732"
+      rpy="1.5708 1.5708 0" />
+    <parent
+      link="caster_plate" />
+    <child
+      link="front_caster_bracket" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+
+
+  <link
+    name="front_caster_wheel">
+    <inertial>
+      <origin
+        xyz="0 -1.11022302462516E-16 -5.55111512312578E-17"
+        rpy="0 0 0" />
+      <mass
+        value="0.536233974367649" />
+      <inertia
+        ixx="0.00102083888487686"
+        ixy="-3.7578670947432E-11"
+        ixz="-5.49056044341157E-18"
+        iyy="0.00186916214511589"
+        iyz="4.86077078101959E-19"
+        izz="0.0010208060948475" />
+    </inertial>
+
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://v5_asm/meshes/front_caster_wheel.dae" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://v5_asm/meshes/front_caster_wheel.dae" />
+      </geometry>
+    </collision>
+  </link>
+
+  <joint
+    name="front_caster_wheel"
+    type="continuous">
+    <origin
+      xyz="0.35417 0.24809 0.11425"
+      rpy="0 0 0" />
+    <parent
+      link="front_caster_bracket" />
+    <child
+      link="front_caster_wheel" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+
+
+  <link
+    name="back_caster_bracket">
+    <inertial>
+      <origin
+        xyz="1.67037157439154E-07 -0.0868275208414239 0.00764135388193965"
+        rpy="0 0 0" />
+      <mass
+        value="0.0423689978722741" />
+      <inertia
+        ixx="6.26126883817095E-05"
+        ixy="-8.45844635296862E-10"
+        ixz="2.25772431514382E-10"
+        iyy="7.35721776271657E-05"
+        iyz="-1.3433956339157E-05"
+        izz="5.16282462873607E-05" />
+    </inertial>
+
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://v5_asm/meshes/back_caster_bracket.dae" scale = "0.001 0.001 0.001"/>
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://v5_asm/meshes/back_caster_bracket.dae" scale = "0.001 0.001 0.001"/>
+      </geometry>
+    </collision>
+  </link>
+  
+  <joint
+    name="back_caster_bracket"
+    type="fixed">
+    <origin
+      xyz="-0.00094312 -0.06237 -0.16395"
+      rpy="1.5708 0.037075 0" />
+    <parent
+      link="caster_plate" />
+    <child
+      link="back_caster_bracket" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+
+
+  <link
+    name="back_caster_wheel">
+    <inertial>
+      <origin
+        xyz="-1.0456E-11 6.7448E-11 -1.9645E-13"
+        rpy="0 0 0" />
+      <mass
+        value="0.53622" />
+      <inertia
+        ixx="0.0010208"
+        ixy="-3.7579E-11"
+        ixz="-7.6578E-13"
+        iyy="0.0018692"
+        iyz="7.6476E-19"
+        izz="0.0010208" />
+    </inertial>
+
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://v5_asm/meshes/back_caster_wheel.dae" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://v5_asm/meshes/back_caster_wheel.dae" />
+      </geometry>
+    </collision>
+  </link>
+
+  <joint
+    name="back_caster_wheel"
+    type="continuous">
+    <origin
+      xyz="-0.00022561 -0.071859 0.068169"
+      rpy="3.1416 -0.044138 1.5708" />
+    <parent
+      link="back_caster_bracket" />
+    <child
+      link="back_caster_wheel" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+
+  
+  <link
+    name="left_gear_box">
+    <inertial>
+      <origin
+        xyz="0.00739304791093054 0.0184132537576796 -0.00195305339886431"
+        rpy="0 0 0" />
+      <mass
+        value="1.63780560174486" />
+      <inertia
+        ixx="0.00495644861508239"
+        ixy="-0.000669333725659883"
+        ixz="6.71187797682122E-05"
+        iyy="0.00382306425706198"
+        iyz="0.000163933699935291"
+        izz="0.00760016402666202" />
+    </inertial>
+
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://v5_asm/meshes/left_gear_box.dae" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://v5_asm/meshes/left_gear_box.dae" />
+      </geometry>
+    </collision>
+  </link>
+
+  <joint
+    name="left_gear_box"
+    type="fixed">
+    <origin
+      xyz="0.44635 -0.78338 0.47561"
+      rpy="-1.5708 0 -1.5708" />
+    <parent
+      link="base_link_main" />
+    <child
+      link="left_gear_box" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+
+
+  <link
+    name="left_i_wheel">
+    <inertial>
+      <origin
+        xyz="0.0177417489006745 -4.1929935734597E-07 -1.59892757811697E-07"
+        rpy="0 1.57079632679 0" />
+      <mass
+        value="10.8391746130566" />
+      <inertia
+        ixx="0.359971317777513"
+        ixy="-1.74908672611907E-08"
+        ixz="-1.43629913581696E-07"
+        iyy="0.18578129227598"
+        iyz="-1.44805236117901E-06"
+        izz="0.185820148109984" />
+    </inertial>
+
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 1.57079632679 0" />
+      <geometry>
+        <mesh
+          filename="package://v5_asm/meshes/left_i_wheel.dae" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.752941176470588 0.752941176470588 0.752941176470588 1" />
+      </material>
+    </visual>
+
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 1.57079632679 0" />
+      <geometry>
+        <mesh
+          filename="package://v5_asm/meshes/left_i_wheel.dae" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <joint
+    name="left_i_wheel"
+    type="continuous">
+    <origin
+      xyz="0 0 0.052156"
+      rpy="1.1682 1.5708 0" />
+    <parent
+      link="left_gear_box" />
+    <child
+      link="left_i_wheel" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+
+
+  <link
+    name="right_gear_box">
+    <inertial>
+      <origin
+        xyz="0.00739304791093043 -0.0184132537576797 0.00195305339886435"
+        rpy="0 0 0" />
+      <mass
+        value="1.63780560174486" />
+      <inertia
+        ixx="0.00495644861508239"
+        ixy="0.000669333725659883"
+        ixz="-6.71187797682128E-05"
+        iyy="0.00382306425706198"
+        iyz="0.00016393369993529"
+        izz="0.00760016402666201" />
+    </inertial>
+
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://v5_asm/meshes/right_gear_box.dae" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://v5_asm/meshes/right_gear_box.dae" />
+      </geometry>
+    </collision>
+  </link>
+
+  <joint
+    name="right_gear_box"
+    type="fixed">
+    <origin
+      xyz="0.018326 -0.78338 0.47561"
+      rpy="1.5708 0 1.5708" />
+    <parent
+      link="base_link_main" />
+    <child
+      link="right_gear_box" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+
+
+  <link
+    name="right_i_wheel">
+    <inertial>
+      <origin
+        xyz="0.0177417489006745 -4.19294752806998E-07 -1.59891818396485E-07"
+        rpy="0 1.57079632679 0" />
+      <mass
+        value="10.8391746130566" />
+      <inertia
+        ixx="0.359969793874044"
+        ixy="-8.40262466952751E-09"
+        ixz="2.00445994282709E-08"
+        iyy="0.185780931677524"
+        iyz="-1.19702130537763E-06"
+        izz="0.185818951022821" />
+    </inertial>
+
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 1.57079632679 0" />
+      <geometry>
+        <mesh
+          filename="package://v5_asm/meshes/right_i_wheel.dae" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.752941176470588 0.752941176470588 0.752941176470588 1" />
+      </material>
+    </visual>
+
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 1.57079632679 0" />
+      <geometry>
+        <mesh
+          filename="package://v5_asm/meshes/right_i_wheel.dae" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <joint
+    name="right_i_wheel"
+    type="continuous">
+    <origin
+      xyz="0 0 -0.052156"
+      rpy="1.5708 -1.5708 0" />
+    <parent
+      link="right_gear_box" />
+    <child
+      link="right_i_wheel" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+
+
+  <link
+    name="lower_chasis_and_battery">
+    <inertial>
+      <origin
+        xyz="-7.40624126181477E-05 0.0616565980495644 -0.0313255964907295"
+        rpy="0 0 0" />
+      <mass
+        value="14.0902746517906" />
+      <inertia
+        ixx="0.0787989259767557"
+        ixy="-1.28686109765554E-06"
+        ixz="8.31096809270812E-05"
+        iyy="0.208127955865328"
+        iyz="-0.00143169842059501"
+        izz="0.144911480468362" />
+    </inertial>
+
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://v5_asm/meshes/lower_chasis_and_battery.dae" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.298039215686275 0.298039215686275 0.298039215686275 1" />
+      </material>
+    </visual>
+
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://v5_asm/meshes/lower_chasis_and_battery.dae" />
+      </geometry>
+    </collision>
+  </link>
+
+  <joint
+    name="lower_chasis_and_battery"
+    type="fixed">
+    <origin
+      xyz="0.23234 -0.82239 0.33073"
+      rpy="1.5708 0 0" />
+    <parent
+      link="base_link_main" />
+    <child
+      link="lower_chasis_and_battery" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+
+
+  <link
+    name="upper_chasis">
+    <inertial>
+      <origin
+        xyz="0.408010034067037 0.523436425874833 0.310459511796759"
+        rpy="0 0 0" />
+      <mass
+        value="0.830786236359305" />
+      <inertia
+        ixx="0.0113561959346229"
+        ixy="-1.77137015581408E-06"
+        ixz="-1.92392161060582E-12"
+        iyy="0.00307752453202283"
+        iyz="-2.16245929932274E-11"
+        izz="0.00841950781307632" />
+    </inertial>
+
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://v5_asm/meshes/upper_chasis.dae" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://v5_asm/meshes/upper_chasis.dae" />
+      </geometry>
+    </collision>
+  </link>
+
+  <joint
+    name="upper_chasis"
+    type="fixed">
+    <origin
+      xyz="-0.07828 -0.90265 0.78248"
+      rpy="1.5708 0 1.5708" />
+    <parent
+      link="base_link_main" />
+    <child
+      link="upper_chasis" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+
+
+  <link
+    name="kinect">
+    <inertial>
+      <origin
+        xyz="2.85546254141789E-06 0.00442617876381557 -0.0296652165432638"
+        rpy="0 0 0" />
+      <mass
+        value="2.43875456249446" />
+      <inertia
+        ixx="0.00366777685200428"
+        ixy="3.65666914100067E-08"
+        ixz="-4.13408382742863E-07"
+        iyy="0.0053508686708892"
+        iyz="0.000216031980389351"
+        izz="0.00205613161528836" />
+    </inertial>
+
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://v5_asm/meshes/kinect.dae" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.941176470588235 0.941176470588235 0.941176470588235 1" />
+      </material>
+    </visual>
+
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://v5_asm/meshes/kinect.dae" />
+      </geometry>
+    </collision>
+  </link>
+
+  <joint
+    name="kinect"
+    type="fixed">
+    <origin
+      xyz="0.33702 0.80334 0.31779"
+      rpy="3.1416 -1.5708 0" />
+    <parent
+      link="upper_chasis" />
+    <child
+      link="kinect" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+
+  
+  <link
+    name="lidar">
+    <inertial>
+      <origin
+        xyz="0.000294783332731696 0.0357745252112349 -2.58234201516716E-06"
+        rpy="0 0 0" />
+      <mass
+        value="0.585082164914895" />
+      <inertia
+        ixx="0.00062906696678346"
+        ixy="-6.8476888066688E-08"
+        ixz="-1.14106053435051E-10"
+        iyy="0.000749251783736662"
+        iyz="-5.004876230364E-08"
+        izz="0.000630263932043022" />
+    </inertial>
+
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://v5_asm/meshes/lidar.dae" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://v5_asm/meshes/lidar.dae" />
+      </geometry>
+    </collision>
+  </link>
+
+  <joint
+    name="lidar"
+    type="fixed">
+    <origin
+      xyz="0.40469 0.76764 0.30488"
+      rpy="3.1416 0 0.087266" />
+    <parent
+      link="upper_chasis" />
+    <child
+      link="lidar" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+
+
+  <link
+    name="monitor">
+    <inertial>
+      <origin
+        xyz="-9.44272438019311E-13 0.0100274135784167 1.28586030712086E-12"
+        rpy="0 0 0" />
+      <mass
+        value="1.77239075139848" />
+      <inertia
+        ixx="0.0081743729118215"
+        ixy="-2.82200542311203E-12"
+        ixz="4.5362584792376E-17"
+        iyy="0.0290517648183889"
+        iyz="-6.23620652586998E-17"
+        izz="0.0209962115185463" />
+    </inertial>
+
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://v5_asm/meshes/monitor.dae" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.647058823529412 0.619607843137255 0.6 1" />
+      </material>
+    </visual>
+
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://v5_asm/meshes/monitor.dae" />
+      </geometry>
+    </collision>
+  </link>
+
+  <joint
+    name="monitor"
+    type="fixed">
+    <origin
+      xyz="0.4177 0.55518 0.3106"
+      rpy="1.5708 1.5708 0" />
+    <parent
+      link="upper_chasis" />
+    <child
+      link="monitor" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+
+
+  <link
+    name="arm_stand">
+    <inertial>
+      <origin
+        xyz="-0.0449002179804069 -0.00120158576170751 -0.0786427433397576"
+        rpy="0 0 0" />
+      <mass
+        value="1.50525286307822" />
+      <inertia
+        ixx="0.00548888032967621"
+        ixy="1.929980925743E-05"
+        ixz="-0.00180882087465193"
+        iyy="0.00662090700121496"
+        iyz="6.80641116194522E-06"
+        izz="0.00455713436329697" />
+    </inertial>
+
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://v5_asm/meshes/arm_stand.dae" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://v5_asm/meshes/arm_stand.dae" />
+      </geometry>
+    </collision>
+  </link>
+
+  <joint
+    name="arm_stand"
+    type="fixed">
+    <origin
+      xyz="0.17434 -0.98064 0.86287"
+      rpy="0 -0.5236 1.5708" />
+    <parent
+      link="base_link_main" />
+    <child
+      link="arm_stand" />
+    <axis
+      xyz="0.5 0 0.86603" />
+  </joint>
+
+
+
+  
+<!--
+
+
+  <joint name="stand_to_arm" type="fixed">
+    <origin xyz="0 0 3.016"
+            rpy="0 0 0" />
+    <parent link="arm_stand"/>
+    <child link = "base_link"/>
+    <axis
+      xyz="0.86603 -0.022933 0.49947"/>
+  </joint>
+  -->
+
+</robot>
+
+
+<!-- arm stuff
+
+  <link name="arm_base">
+  <visual>
+    <geometry>
+      <mesh filename="package://ur_description/meshes/ur5/visual/base.dae"/>
+    </geometry>
+    <origin rpy="0 0.0 2.3561944875" xyz="0.0 0.0 0.0"/>
+  </visual>
+
+  <collision>
+    <geometry>
+      <mesh filename="package://ur_description/meshes/ur5/collision/base.dae"/>
+    </geometry>
+    <!-- <origin rpy="0.0 0.0 0.0" xyz="0.0 0.0 -0.009159"/> -->
+  </collision>
+
+  <inertial>
+    <mass value="4.0"/>
+    <inertia ixx="0.004433" ixy="0.0" ixz="0.0" iyy="0.00443333156" iyz="0.0" izz="0.0072"/>
+  </inertial>
+  </link> 
+
+  <joint
+    name = "arm_base" 
+    type="fixed">
+    <origin xyz="0 0 3.016"
+            rpy="1.5708 1.5708 0" />
+    <parent link="arm_stand"/>
+    <child link = "arm_base"/>
+    <axis
+      xyz="0.86603 -0.022933 0.49947" />
+  </joint>
+  
+
+<!-- <inertia ixx="0.0833333 * 4.0 * (3 * 0.06 * 0.06 + 0.05 * 0.05)" ixy="0.0" ixz="0.0"
+        iyy="0.0833333 * 4.0 * (3 * 0.06 * 0.06 + 0.05 * 0.05)" iyz="0.0"
+        izz="0.5 * 4.0 * 0.06 * 0.06" /> -->
+
+  <link name="shoulder_link">
+  <visual>
+    <geometry>
+      <mesh filename="package://ur_description/meshes/ur5/visual/shoulder.dae"/>
+    </geometry>
+  </visual>
+
+  <collision>
+    <geometry>
+      <mesh filename="package://ur_description/meshes/ur5/collision/shoulder.dae"/>
+    </geometry>
+    <!-- <origin rpy="0.0 0.0 0.0" xyz="0.0 0.0 -0.009159"/> -->
+  </collision>
+
+  <inertial>
+    <mass value="3.7"/>
+    <inertia ixx="0.010267495893" ixy="0.0" ixz="0.0" iyy="0.010267495893" iyz="0.0" izz="0.00666"/>
+    <origin rpy="0.0 0.0 0.0" xyz="0.0 0.00193 -0.02561"/>
+  </inertial>
+  </link>
+
+  <joint name="shoulder_pan_joint" type="revolute">
+    <parent link="arm_base"/>
+    <child link="shoulder_link"/>
+    <origin rpy="0.0 0.0 0.0" xyz="0.0 0.0 0.089159"/>
+    <axis xyz="0 0 1"/>
+    <limit effort="150.0" lower="-6.2831853" upper="6.2831853" velocity="3.14159265"/>
+    <dynamics damping="0.0" friction="0.0"/>
+  </joint>
+
+<!--<inertia ixx="0.0833333 * 3.7 * (3 * 0.06 * 0.06 + 0.15 * 0.15)" ixy="0.0" ixz="0.0"
+        iyy="0.0833333 * 3.7 * (3 * 0.06 * 0.06 + 0.15 * 0.15)" iyz="0.0"
+        izz="0.5 * 3.7 * 0.06 * 0.06" /> -->
+
+  <link name="upper_arm_link">
+    <visual>
+      <geometry>
+        <mesh filename="package://ur_description/meshes/ur5/visual/upperarm.dae"/>
+      </geometry>
+      <origin rpy="0.0 0.0 0.0" xyz="0.0 0.0 0.0"/>
+    </visual>
+    <collision>
+      <geometry>
+        <mesh filename="package://ur_description/meshes/ur5/collision/upperarm.dae"/>
+      </geometry>
+      <!--       <origin rpy="0.0 0.0 0.0" xyz="0.0 0.0 0.2125"/> -->
+    </collision>
+    <inertial>
+      <mass value="8.393"/>
+      <inertia ixx="0.22689067591036" ixy="0.0" ixz="0.0" iyy="0.22689067591036" iyz="0.0" izz="0.0151074" />
+      <origin rpy="0.0 0.0 0.0" xyz="0.0 -0.024201 0.2125"/>  
+      </inertial>
+  </link>
+
+  <joint name="shoulder_lift_joint" type="revolute">
+    <parent link="shoulder_link"/>
+    <child link="upper_arm_link"/>
+    <origin rpy="0.0 1.570796325 0.0" xyz="0.0 0.13585 0.0"/>
+    <axis xyz="0 1 0"/>
+    <limit effort="150.0" lower="-6.2831853" upper="6.2831853" velocity="3.14159265"/>
+    <dynamics damping="0.0" friction="0.0"/>
+  </joint>
+ <!--    <inertia ixx="0.0833333 * 8.393 * (3 * 0.06 * 0.06 + 0.56 * 0.56)" ixy="0.0" ixz="0.0"
+        iyy="0.0833333 * 8.393 * (3 * 0.06 * 0.06 + 0.56 * 0.56)" iyz="0.0"
+        izz="0.5 * 8.393 * 0.06 * 0.06" />-->
+
+  <link name="forearm_link">
+    <visual>
+      <geometry>
+        <mesh filename="package://ur_description/meshes/ur5/visual/forearm.dae"/>
+      </geometry>
+    </visual>
+    <collision>
+      <geometry>
+        <mesh filename="package://ur_description/meshes/ur5/collision/forearm.dae"/>
+      </geometry>
+      <!--       <origin rpy="0.0 0.0 0.0" xyz="0.0 0.0 0.196125"/> -->
+    </collision>
+    <inertial>
+      <mass value="2.275"/>
+      <origin rpy="0.0 0.0 0.0" xyz="0.0 0.0265 0.11993"/>
+       <inertia ixx="0.049443313556" ixy="0.0" ixz="0.0" iyy="0.049443313556" iyz="0.0" izz="0.004095" />
+    </inertial>
+  </link>
+
+  <joint name="elbow_joint" type="revolute">
+    <parent link="upper_arm_link"/>
+    <child link="forearm_link"/>
+    <origin rpy="0.0 0.0 0.0" xyz="0.0 -0.1197 0.425"/>
+    <axis xyz="0 1 0"/>
+    <limit effort="150.0" lower="-6.2831853" upper="6.2831853" velocity="3.14159265"/>
+    <dynamics damping="0.0" friction="0.0"/>
+  </joint>
+
+ <!--    <inertia ixx="0.0833333 * 2.275 * (3 * 0.06 * 0.06 + 0.5 * 0.5)" ixy="0.0" ixz="0.0"
+        iyy="0.0833333 * 2.275 * (3 * 0.06 * 0.06 + 0.5 * 0.5)" iyz="0.0"
+        izz="0.5 * 2.275 * 0.06 * 0.06" /> -->
+
+  <link name="wrist_1_link">
+    <visual>
+      <geometry>
+        <mesh filename="package://ur_description/meshes/ur5/visual/wrist1.dae"/>
+      </geometry>
+      <origin rpy="0.0 1.570796325 0.0" xyz="0.0 0.093 0.0"/>
+    </visual>
+    <collision>
+      <geometry>
+        <mesh filename="package://ur_description/meshes/ur5/collision/wrist1.dae"/>
+      </geometry>
+      <origin rpy="0.0 1.570796325 0.0" xyz="0.0 0.093 0.0"/>
+    </collision>
+    <inertial>
+      <mass value="1.219"/>
+      <origin rpy="0.0 0.0 0.0" xyz="0.0 0.110949 0.01634"/>   
+      <inertia ixx="0.11117275553088" ixy="0.0" ixz="0.0" iyy="0.11117275553088" iyz="0.0" izz="0.21942" />
+    </inertial>
+  </link>
+
+  <joint name="wrist_1_joint" type="revolute">
+    <parent link="forearm_link"/>
+    <child link="wrist_1_link"/>
+    <origin rpy="0.0 1.570796325 0.0" xyz="0.0 0.0 0.39225"/>
+    <axis xyz="0 1 0"/>
+    <limit effort="28.0" lower="-3.14159265" upper="4.71" velocity="3.14159265"/>
+    <dynamics damping="0.0" friction="0.0"/>
+  </joint>
+
+<!--    <inertia ixx="0.0833333 * 1.219 * (3 * 0.6 * 0.6 + 0.12 * 0.12)" ixy="0.0" ixz="0.0"
+        iyy="0.0833333 * 1.219 * (3 * 0.6 * 0.6 + 0.12 * 0.12)" iyz="0.0"
+        izz="0.5 * 1.219 * 0.6 * 0.6" /> -->
+
+  <link name="wrist_2_link">
+    <visual>
+      <geometry>
+        <mesh filename="package://ur_description/meshes/ur5/visual/wrist2.dae"/>
+      </geometry>
+      <origin rpy="0.0 0.0 0.0" xyz="0.0 0.0 0.09465"/>
+    </visual>
+    <collision>
+      <geometry>
+        <mesh filename="package://ur_description/meshes/ur5/collision/wrist2.dae"/>
+      </geometry>
+      <origin rpy="0.0 0.0 0.0" xyz="0.0 0.0 0.09465"/>
+    </collision>
+    <inertial>
+      <mass value="1.219"/>
+      <origin rpy="0.0 0.0 0.0" xyz="0.0 0.0018 0.11099"/>  
+      <inertia ixx="0.11117275553088" ixy="0.0" ixz="0.0" iyy="0.11117275553088" iyz="0.0" izz="0.21942" />
+    </inertial>
+  </link>
+
+  <joint name="wrist_2_joint" type="revolute">
+    <parent link="wrist_1_link"/>
+    <child link="wrist_2_link"/>
+    <origin rpy="0.0 0.0 0.0" xyz="0.0 0.093 0.0"/>
+    <axis xyz="0 0 1"/>
+    <limit effort="28.0" lower="-3.14159265" upper="4.71" velocity="3.14159265"/>
+    <dynamics damping="0.0" friction="0.0"/>
+  </joint>
+
+<!--    <inertia ixx="0.0833333 * 1.219 * (3 * 0.6 * 0.6 + 0.12 * 0.12)" ixy="0.0" ixz="0.0"
+        iyy="0.0833333 * 1.219 * (3 * 0.6 * 0.6 + 0.12 * 0.12)" iyz="0.0"
+        izz="0.5 * 1.219 * 0.6 * 0.6" /> -->
+
+  <link name="wrist_3_link">
+    <visual>
+      <geometry>
+        <mesh filename="package://ur_description/meshes/ur5/visual/wrist3.dae"/>
+      </geometry>
+    </visual>
+    <collision>
+      <geometry>
+        <mesh filename="package://ur_description/meshes/ur5/collision/wrist3.dae"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.1879"/>
+      <origin rpy="0.0 0.0 0.0" xyz="0.0 0.001159 0.0"/>
+      <inertia ixx="0.017136473145408" ixy="0.0" ixz="0.0" iyy="0.017136473145408" iyz="0.0" izz="0.033822" />
+    </inertial>
+  </link>
+
+  <joint name="wrist_3_joint" type="revolute">
+    <parent link="wrist_2_link"/>
+    <child link="wrist_3_link"/>
+    <origin rpy="0.0 0.0 0.0" xyz="0.0 0.0 0.09465"/>
+    <axis xyz="0 1 0"/>
+    <limit effort="28.0" lower="-3.14159265" upper="3.14159265" velocity="3.14159265"/>
+    <dynamics damping="0.0" friction="0.0"/>
+  </joint> -->
+
+<!--     <inertia ixx="0.0833333 * 0.1879 * (3 * 0.6 * 0.6 + 0.12 * 0.12)" ixy="0.0" ixz="0.0"
+        iyy="0.0833333 * 0.1879 * (3 * 0.6 * 0.6 + 0.12 * 0.12)" iyz="0.0"
+        izz="0.5 * 0.1879 * 0.6 * 0.6" />-->
+
+  <!-- <link name="ee_link">
+    <collision>
+      <origin xyz="0.025 0 0.0" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.05 0.05 0.05"/>
+      </geometry>
+    </collision>
+    <visual>
+      <origin xyz="0.025 0 0.0" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.05 0.05 0.05"/>
+      </geometry>
+    </visual>
+    <inertial>
+      <origin xyz="0.025 0.025 0.025" rpy="0 0 0"/>
+      <mass value="0.00001"/>
+      <inertia
+        ixx="0.000000004" ixy="0.0" ixz="0.0"
+        iyy="0.000000004" iyz="0.0"
+        izz="0.000000004"/>
+    </inertial>
+  </link>
+
+  <joint name="ee_fixed_joint" type="revolute">
+    <parent link="wrist_3_link"/>
+    <child link="ee_link"/>
+    <origin rpy="0.0 0.0 1.570796325" xyz="0.0 0.0823 0.0"/>
+    <axis xyz="0 1 0"/>
+    <limit effort="0.0" lower="0" upper="0" velocity="0"/>
+  </joint> -->
+
+<!--
+     <mass value="5"/>
+      <inertia
+        ixx="0.002083333" ixy="0.0" ixz="0.0"
+        iyy="0.002083333" iyz="0.0"
+        izz="0.002083333"/>
+    </inertial> -->
+
+</robot>

@@ -1,0 +1,1 @@
+controller_joint_names: ['', 'front_caster_wheel', 'back_caster_wheel', 'left_i_wheel', 'right_i_wheel', 'ur5_joint_1', 'ur5_joint_2', 'ur5_joint_3', 'ur5_joint_4', 'ur5_joint_5', 'ur5_joint_6', '2F140', ]

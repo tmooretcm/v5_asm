@@ -1,0 +1,76 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://wiki.ros.org/xacro"
+       name="ur5" >
+
+  <xacro:arg name="transmission_hw_interface" default="hardware_interface/PositionJointInterface"/>
+
+  <!-- common stuff -->
+  <xacro:include filename="$(find ur_description)/urdf/common.gazebo.xacro" />
+
+  <!-- ur5 -->
+  <xacro:include filename="$(find v5_asm)/urdf/ur5.urdf.xacro" />
+
+  <!-- arm -->
+  <xacro:ur5_robot prefix="" joint_limited="false"
+    transmission_hw_interface="$(arg transmission_hw_interface)"
+  />
+
+  <link name="world" />
+
+  <joint name="world_to_arm" type="fixed">
+    <parent link="world" />
+    <child link = "base_link" />
+    <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+  </joint>
+
+   <link
+    name="base_link_main">
+    <inertial>
+      <origin
+        xyz="0.211886378 -0.81046675318 0.51736994677"
+        rpy="-1.57 0 0" />
+      <mass
+        value="20.4660866954057" />
+      <inertia
+        ixx="0.193568038684775"
+        ixy="0.00548623614276343"
+        ixz="-6.15228083843436E-05"
+        iyy="0.108859012808764"
+        iyz="-0.00384844545395753"
+        izz="0.229327239703698" />
+    </inertial>
+
+    <visual>
+      <origin
+        xyz="0.211886378 -0.81046675318 10.51736994677"
+        rpy="-1.57 0 0" />
+      <geometry>
+        <mesh
+          filename="package://v5_asm/meshes/base_link.dae" scale = "0.0254 0.0254 0.0254"/>
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.752941176470588 0.752941176470588 0.752941176470588 1" />
+      </material>
+    </visual>
+
+    <collision>
+      <origin
+        xyz="0.211886378 -0.81046675318 0.51736994677"
+        rpy="-1.57 0 0" />
+      <geometry>
+        <mesh
+          filename="package://v5_asm/meshes/base_link_main.dae" scale = "0.0254 0.0254 0.0254"/>
+      </geometry>
+    </collision>
+
+  </link>
+  
+  <joint name="world_to_base" type="fixed">
+    <parent link="world" />
+    <child link = "base_link_main" />
+    <origin xyz="3.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+  </joint>
+
+</robot>
